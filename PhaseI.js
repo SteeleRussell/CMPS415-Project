@@ -1,7 +1,9 @@
 const express = require('express');
-const bodyParser=require('body-parser');
+const bodyParser = require('body-parser');
 const app = express();
+//const config = require("./config.json");
 const port = 3000;
+var fs = require("fs");
 
 app.listen(port);
 console.log('Server started at http://localhost:' + port);
@@ -9,8 +11,26 @@ console.log('Server started at http://localhost:' + port);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/', function(req, res) {
+  const myquery = req.query;
+  var outstring = 'Starting... ';
+  res.send(outstring);
+});
+
 app.get('/rest/list/', function(req, res) {
-  const searchKey = "{ id: '" + req.params.item + "'}";
+  fs.readFile("mydata.txt" , "utf8", (err, jsonString) => {
+    if (err){
+      console.log("File read failed: ", err);
+      return;
+    }
+    try{
+      const ticket = JSON.parse(jsonString);
+      console.log("Ticket: ", ticket);
+    }
+    catch (err){
+      console.log("Error parsing JSON string: ", err);
+    };
+  })
 });
 
 app.get('/rest/ticket/:id', function(req, res) {
@@ -18,27 +38,36 @@ app.get('/rest/ticket/:id', function(req, res) {
   console.log("Looking for: " + searchKey); 
 });
 
-app.get('/wfile', function(req, res) {
-  const myquery = req.query;
-  
-  var outstring = '';
-  for(var key in myquery) { outstring += "--" + key + ">" + myquery[key]; }
-  fs.appendFile("mydata.txt", outstring+'\n', (err) => {
-    if (err)
-      console.log(err);
-    else {
-      console.log("File written successfully\n");
-      console.log("Contents of file now:\n");
-      console.log(fs.readFileSync("mydata.txt", "utf8"));
-    }
-  });
- 
-  res.send(outstring);
-
-});
-
 app.post('/rest/ticket/', function(req, res) {
-  const id = req.body.id;
+  const ticket = {
+    id: req.body.id,
+    created_at: req.body.created_at,
+    updated_at: req.body.updated_at,
+    type: req.body.type,
+    subject: req.body.subject,
+    description: req.body.description,
+    priority: req.body.priority,
+    status: req.body.status,
+    recipient: req.body.recipient,
+    submitter: req.body.submitter,
+    assignee_id: req.body.assignee_id,
+    follower_ids: req.body.follower_ids,
+    tags: req.body.tags,
+  }
+
+  const jsonString = JSON.stringify(ticket);
+  
+  fs.writeFIle('mydata.txt', jsonString, err => {
+    if(err) {
+      console.log('Error writing file', err)
+    }
+    else{
+      console.log('Succesfully wrote file')
+    }
+  })
+
+
+  /*const id = req.body.id;
   const created_at = req.body.created_at;
   const updated_at = req.body.updated_at;
   const type = req.body.type;
@@ -52,7 +81,9 @@ app.post('/rest/ticket/', function(req, res) {
   const follower_ids = req.body.follower_ids;
   const tags = req.body.tags;
   
-  res.send({
+
+
+  /*res.send({
     'id': id,
     'created_at': created_at,
     'updated_at': updated_at,
@@ -66,5 +97,5 @@ app.post('/rest/ticket/', function(req, res) {
     'assignee_id': assignee_id,
     'follower_ids': follower_ids,
     'tags': tags
-  });
+  }); */
 });
