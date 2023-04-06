@@ -1,0 +1,21 @@
+
+{
+  "name": "CMPS415-Project",
+  "version": "1.0.0",
+  "description": "JBs CMPS415-Project",
+  "main": "testmongo2.js",
+  "repository": "https://github.com/JBarber21/CMPS415-Project",
+  "author": "JB",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "start": "node PhaseI.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
