@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/rest/list/', function(req, res) {
-
+  const searchKey = "{ id: '" + req.params.item + "'}";
 });
 
 app.get('/rest/ticket/:id', function(req, res) {
