@@ -34,7 +34,7 @@ app.get('/rest/list/', function(req, res) {
 });
 
 app.get('/rest/ticket/:id', function(req, res) {
-  const searchKey = "{ id: '" + req.params.item + "'}";
+  const searchKey = "{ id: '" + req.params.id + "'}";
   console.log("Looking for: " + searchKey); 
 });
 
